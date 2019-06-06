@@ -4,4 +4,12 @@ Yanisa Sunthornyotin (Ming) - Summer Student - CMS Monit Team
 
 |Week|        Task        |  Problem  | Next Step  | 
 |:----:|:--------|------------| ------------|
-| 1     | <ul><li>[x] Data aggregation: Kafka subject realtime groupping according to timeframe(windowing)</li><li>[x] Consume message from Kafka topic ("email_alert")</li></ul>| <ul><li>SparkContext takes time to restart so it will affect debugging process</li> <li> Email didn't keep coming constantly everyday(there's no email coming today)so it will be hard to test the result</li><ul> | <ul><li>Saving realtime dataframe to HDFS in order to process next (training data)</li> <li> Sending alert to kafka topic in or deer to send an email("snow_ticket") but still don't know how to get feedback from user</li><ul> |
+| 1     | <ul><li>[x] Data aggregation: Kafka subject realtime groupping according to timeframe(windowing)</li><li>[x] Consume message from Kafka topic ("email_alert")</li></ul>| <ul><li> Take too much time in choosing a library and find the right one that is appropriate to our usecase</li><li>SparkContext takes time to restart so it will affect debugging process</li> <li> Email didn't keep coming constantly everyday(there's no email coming today)so it will be hard to test the result</li><ul> | <ul><li>Saving realtime dataframe to HDFS in order to process next (training data)</li> <li> Sending alert to kafka topic("snow_ticket") in order to send an email but still don't know how to get feedback from user</li><ul> |
+
+Choosing Library
+--------------
+|Lib/Stack|        Pros        |  Cons  |
+|:----:|:--------|------------| 
+| kafka-python     | <ul><li>Easy to use, debug, and restart the process</li><li>Easily unwrapped kafka object</li><li>Support large amount of consuming transaction</li></ul>| <ul><li>May not compatible with Spark/HDFS</li><li> Cannot process data in realtime just only in static way</li><ul> |
+| pykafka     | <ul><li>Easy to use, debug, and restart the process</li></ul>| <ul><li>May not compatible with Spark/HDFS</li><li> Cannot process data in realtime just only in static way</li><li>Easily unwrapped kafka object</li><li>Support large amount of producing transaction more than consuming transaction</li><ul> |
+| Spark Structured Streaming     |  <ul><li> Definitely compatible with Spark/HDFS</li><li> Can process data in realtime</li><ul> |<ul><li>Difficult to use, debug, and restart the process</li><li>Might be more complex to unwrapped kafka object</li><li>Support large amount of producing transaction</li></ul>| 
