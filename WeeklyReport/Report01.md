@@ -15,6 +15,10 @@ Choosing Library
 | Spark Structured Streaming     |  <ul><li> Definitely compatible with Spark/HDFS</li><li>Easy to use, debug, and restart the process</li><li> Can process data in realtime</li><li>Easy to unwrap kafka object and deal with the dataframe</li><ul> |<ul><li> Still working on exploring whether it can trigger sending data on the aggregation value or not</li></ul>| 
 | Spark Streaming     |  <ul><li> Definitely compatible with Spark/HDFS</li><li> Can process data in realtime</li><ul> |<ul><li>Difficult to use, debug, and restart the process</li><li>Might be more complex to unwrapped kafka object and deal with the dataframe</li></ul>| 
     
-Structure Streaming    
+Suggested Library : Spark Structured Streaming    
 --------------
 Structured Streaming is the Apache Spark API that lets you express computation on streaming data in the same way you express a batch computation on static data. The Spark SQL engine performs the computation incrementally and continuously updates the result as streaming data arrives.
+Ref: 
+<li>https://docs.databricks.com/spark/latest/structured-streaming/index.html</li>
+<li>https://spark.apache.org/docs/2.1.0/structured-streaming-programming-guide.html#api-using-datasets-and-dataframes</li>
+<li>https://spark.apache.org/docs/2.1.0/structured-streaming-kafka-integration.html</li>
