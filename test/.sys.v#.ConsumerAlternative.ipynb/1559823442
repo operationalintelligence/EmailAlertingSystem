@@ -1,0 +1,330 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Requirement already satisfied: pykafka in /eos/home-y/ysunthor/.local/lib/python3.6/site-packages (2.8.0)\n",
+      "Requirement already satisfied: tabulate in /eos/home-y/ysunthor/.local/lib/python3.6/site-packages (from pykafka) (0.8.3)\n",
+      "Requirement already satisfied: six>=1.5 in /usr/local/lib/swan (from pykafka) (1.12.0)\n",
+      "Requirement already satisfied: kazoo==2.5.0 in /eos/home-y/ysunthor/.local/lib/python3.6/site-packages (from pykafka) (2.5.0)\n",
+      "\u001b[31mpy2neo 4.0.0 requires colorama, which is not installed.\u001b[0m\n",
+      "\u001b[31mpy2neo 4.0.0 requires neo4j-driver>=1.6.0, which is not installed.\u001b[0m\n",
+      "\u001b[31mparamiko 2.4.0 requires bcrypt>=3.1.3, which is not installed.\u001b[0m\n",
+      "\u001b[31mparamiko 2.4.0 requires cryptography>=1.5, which is not installed.\u001b[0m\n",
+      "\u001b[31mparamiko 2.4.0 requires pyasn1>=0.1.7, which is not installed.\u001b[0m\n",
+      "\u001b[31mparamiko 2.4.0 requires pynacl>=1.0.1, which is not installed.\u001b[0m\n",
+      "\u001b[31mpy2neo 4.0.0 has requirement prompt_toolkit==1.0.15, but you'll have prompt-toolkit 2.0.9 which is incompatible.\u001b[0m\n",
+      "\u001b[31mkeras 2.2.0 has requirement keras_applications==1.0.2, but you'll have keras-applications 1.0.6 which is incompatible.\u001b[0m\n",
+      "\u001b[31mkeras 2.2.0 has requirement keras_preprocessing==1.0.1, but you'll have keras-preprocessing 1.0.5 which is incompatible.\u001b[0m\n",
+      "\u001b[33mYou are using pip version 10.0.1, however version 19.1.1 is available.\n",
+      "You should consider upgrading via the 'pip install --upgrade pip' command.\u001b[0m\n"
+     ]
+    }
+   ],
+   "source": [
+    "!pip install --user pykafka"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from pykafka import KafkaClient\n",
+    "client = KafkaClient(hosts=\"188.185.79.229:9092\")\n",
+    "topic = client.topics['email_alert']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "TypeError",
+     "evalue": "byte indices must be integers or slices, not str",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mTypeError\u001b[0m                                 Traceback (most recent call last)",
+      "\u001b[0;32m<ipython-input-10-4d31f5e407eb>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[1;32m      1\u001b[0m \u001b[0mconsumer\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mtopic\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mget_simple_consumer\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      2\u001b[0m \u001b[0;32mfor\u001b[0m \u001b[0mmessage\u001b[0m \u001b[0;32min\u001b[0m \u001b[0mconsumer\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 3\u001b[0;31m     \u001b[0mprint\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mmessage\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mvalue\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;34m\"subject\"\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[0;31mTypeError\u001b[0m: byte indices must be integers or slices, not str"
+     ]
+    }
+   ],
+   "source": [
+    "consumer = topic.get_simple_consumer()\n",
+    "for message in consumer:\n",
+    "    print(message.value)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from pyspark.streaming.kafka import KafkaUtils\n",
+    "from pyspark import SparkContext\n",
+    "from pyspark.streaming import StreamingContext\n",
+    "from pyspark.streaming.kafka import TopicAndPartition\n",
+    "import json"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "ssc = StreamingContext(sc, 60)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "--2019-06-06 14:00:07--  http://central.maven.org/maven2/org/apache/spark/spark-streaming-kafka-0-8-assembly_2.11/2.3.1/spark-streaming-kafka-0-8-assembly_2.11-2.3.1.jar\n",
+      "Resolving central.maven.org (central.maven.org)... 151.101.112.209\n",
+      "Connecting to central.maven.org (central.maven.org)|151.101.112.209|:80... connected.\n",
+      "HTTP request sent, awaiting response... 200 OK\n",
+      "Length: 12271033 (12M) [application/java-archive]\n",
+      "Saving to: ‘spark-streaming-kafka-0-8-assembly_2.11-2.3.1.jar’\n",
+      "\n",
+      "100%[======================================>] 12,271,033  28.1MB/s   in 0.4s   \n",
+      "\n",
+      "2019-06-06 14:00:08 (28.1 MB/s) - ‘spark-streaming-kafka-0-8-assembly_2.11-2.3.1.jar’ saved [12271033/12271033]\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "!wget http://central.maven.org/maven2/org/apache/spark/spark-streaming-kafka-0-8-assembly_2.11/2.3.1/spark-streaming-kafka-0-8-assembly_2.11-2.3.1.jar"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "Py4JJavaError",
+     "evalue": "An error occurred while calling o141.createDirectStreamWithoutMessageHandler.\n: java.lang.IllegalStateException: Adding new inputs, transformations, and output operations after stopping a context is not supported\n\tat org.apache.spark.streaming.dstream.DStream.validateAtInit(DStream.scala:228)\n\tat org.apache.spark.streaming.dstream.DStream.<init>(DStream.scala:66)\n\tat org.apache.spark.streaming.dstream.InputDStream.<init>(InputDStream.scala:45)\n\tat org.apache.spark.streaming.kafka.DirectKafkaInputDStream.<init>(DirectKafkaInputDStream.scala:66)\n\tat org.apache.spark.streaming.kafka.KafkaUtils$.createDirectStream(KafkaUtils.scala:435)\n\tat org.apache.spark.streaming.kafka.KafkaUtilsPythonHelper.createDirectStream(KafkaUtils.scala:725)\n\tat org.apache.spark.streaming.kafka.KafkaUtilsPythonHelper.createDirectStreamWithoutMessageHandler(KafkaUtils.scala:689)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:244)\n\tat py4j.reflection.ReflectionEngine.invoke(ReflectionEngine.java:357)\n\tat py4j.Gateway.invoke(Gateway.java:282)\n\tat py4j.commands.AbstractCommand.invokeMethod(AbstractCommand.java:132)\n\tat py4j.commands.CallCommand.execute(CallCommand.java:79)\n\tat py4j.GatewayConnection.run(GatewayConnection.java:238)\n\tat java.lang.Thread.run(Thread.java:745)\n",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mPy4JJavaError\u001b[0m                             Traceback (most recent call last)",
+      "\u001b[0;32m<ipython-input-17-cd432873f9c1>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[1;32m      7\u001b[0m kafkaStream =KafkaUtils.createDirectStream(ssc, [\"email_alert\"],\n\u001b[1;32m      8\u001b[0m                                            {\"metadata.broker.list\":\"188.185.79.229:9092\",\n\u001b[0;32m----> 9\u001b[0;31m                                            \"auto.offset.reset\":\"smallest\"})\n\u001b[0m",
+      "\u001b[0;32m/cvmfs/sft.cern.ch/lcg/views/LCG_95apython3/x86_64-centos7-gcc7-opt/lib/python3.6/site-packages/pyspark/streaming/kafka.py\u001b[0m in \u001b[0;36mcreateDirectStream\u001b[0;34m(ssc, topics, kafkaParams, fromOffsets, keyDecoder, valueDecoder, messageHandler)\u001b[0m\n\u001b[1;32m    144\u001b[0m             \u001b[0mfunc\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mfuncWithoutMessageHandler\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    145\u001b[0m             jstream = helper.createDirectStreamWithoutMessageHandler(\n\u001b[0;32m--> 146\u001b[0;31m                 ssc._jssc, kafkaParams, set(topics), jfromOffsets)\n\u001b[0m\u001b[1;32m    147\u001b[0m         \u001b[0;32melse\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    148\u001b[0m             \u001b[0mser\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mAutoBatchedSerializer\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mPickleSerializer\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m/cvmfs/sft.cern.ch/lcg/views/LCG_95apython3/x86_64-centos7-gcc7-opt/lib/python3.6/site-packages/py4j/java_gateway.py\u001b[0m in \u001b[0;36m__call__\u001b[0;34m(self, *args)\u001b[0m\n\u001b[1;32m   1255\u001b[0m         \u001b[0manswer\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mgateway_client\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0msend_command\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mcommand\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1256\u001b[0m         return_value = get_return_value(\n\u001b[0;32m-> 1257\u001b[0;31m             answer, self.gateway_client, self.target_id, self.name)\n\u001b[0m\u001b[1;32m   1258\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1259\u001b[0m         \u001b[0;32mfor\u001b[0m \u001b[0mtemp_arg\u001b[0m \u001b[0;32min\u001b[0m \u001b[0mtemp_args\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m/cvmfs/sft.cern.ch/lcg/views/LCG_95apython3/x86_64-centos7-gcc7-opt/lib/python3.6/site-packages/pyspark/sql/utils.py\u001b[0m in \u001b[0;36mdeco\u001b[0;34m(*a, **kw)\u001b[0m\n\u001b[1;32m     61\u001b[0m     \u001b[0;32mdef\u001b[0m \u001b[0mdeco\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m*\u001b[0m\u001b[0ma\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkw\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     62\u001b[0m         \u001b[0;32mtry\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 63\u001b[0;31m             \u001b[0;32mreturn\u001b[0m \u001b[0mf\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m*\u001b[0m\u001b[0ma\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkw\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     64\u001b[0m         \u001b[0;32mexcept\u001b[0m \u001b[0mpy4j\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mprotocol\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mPy4JJavaError\u001b[0m \u001b[0;32mas\u001b[0m \u001b[0me\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     65\u001b[0m             \u001b[0ms\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0me\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mjava_exception\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mtoString\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m/cvmfs/sft.cern.ch/lcg/views/LCG_95apython3/x86_64-centos7-gcc7-opt/lib/python3.6/site-packages/py4j/protocol.py\u001b[0m in \u001b[0;36mget_return_value\u001b[0;34m(answer, gateway_client, target_id, name)\u001b[0m\n\u001b[1;32m    326\u001b[0m                 raise Py4JJavaError(\n\u001b[1;32m    327\u001b[0m                     \u001b[0;34m\"An error occurred while calling {0}{1}{2}.\\n\"\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 328\u001b[0;31m                     format(target_id, \".\", name), value)\n\u001b[0m\u001b[1;32m    329\u001b[0m             \u001b[0;32melse\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    330\u001b[0m                 raise Py4JError(\n",
+      "\u001b[0;31mPy4JJavaError\u001b[0m: An error occurred while calling o141.createDirectStreamWithoutMessageHandler.\n: java.lang.IllegalStateException: Adding new inputs, transformations, and output operations after stopping a context is not supported\n\tat org.apache.spark.streaming.dstream.DStream.validateAtInit(DStream.scala:228)\n\tat org.apache.spark.streaming.dstream.DStream.<init>(DStream.scala:66)\n\tat org.apache.spark.streaming.dstream.InputDStream.<init>(InputDStream.scala:45)\n\tat org.apache.spark.streaming.kafka.DirectKafkaInputDStream.<init>(DirectKafkaInputDStream.scala:66)\n\tat org.apache.spark.streaming.kafka.KafkaUtils$.createDirectStream(KafkaUtils.scala:435)\n\tat org.apache.spark.streaming.kafka.KafkaUtilsPythonHelper.createDirectStream(KafkaUtils.scala:725)\n\tat org.apache.spark.streaming.kafka.KafkaUtilsPythonHelper.createDirectStreamWithoutMessageHandler(KafkaUtils.scala:689)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:244)\n\tat py4j.reflection.ReflectionEngine.invoke(ReflectionEngine.java:357)\n\tat py4j.Gateway.invoke(Gateway.java:282)\n\tat py4j.commands.AbstractCommand.invokeMethod(AbstractCommand.java:132)\n\tat py4j.commands.CallCommand.execute(CallCommand.java:79)\n\tat py4j.GatewayConnection.run(GatewayConnection.java:238)\n\tat java.lang.Thread.run(Thread.java:745)\n"
+     ]
+    }
+   ],
+   "source": [
+    "kafkaParams = {\"metadata.broker.list\":\"188.185.79.229:9092\"}\n",
+    "# kafkaParams[\"auto.offset.reset\"] = \"smallest\"\n",
+    "\n",
+    "# topic = \"email_alert\"\n",
+    "# topicPartion = TopicAndPartition(topic, 0)\n",
+    "# fromOffset = {topicPartion: 0}\n",
+    "kafkaStream =KafkaUtils.createDirectStream(ssc, [\"email_alert\"],\n",
+    "                                           {\"metadata.broker.list\":\"188.185.79.229:9092\",\n",
+    "                                           \"auto.offset.reset\":\"smallest\"})"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "NameError",
+     "evalue": "name 'smallest' is not defined",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mNameError\u001b[0m                                 Traceback (most recent call last)",
+      "\u001b[0;32m<ipython-input-13-eefad97a1f9b>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0mkafkaStream\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mKafkaUtils\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mcreateDirectStream\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mssc\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\"188.185.79.229:9092\"\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\"spark-streaming\"\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m{\u001b[0m\u001b[0;34m\"email_alert\"\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;36m1\u001b[0m\u001b[0;34m}\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m{\u001b[0m\u001b[0;34m\"auto.offset.reset\"\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0msmallest\u001b[0m\u001b[0;34m}\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[0;31mNameError\u001b[0m: name 'smallest' is not defined"
+     ]
+    }
+   ],
+   "source": [
+    "kafkaStream = KafkaUtils.createDirectStream(ssc,\"188.185.79.229:9092\",\"spark-streaming\",{\"email_alert\":1},{\"auto.offset.reset\":smallest})"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "parsed = kafkaStream.map(lambda v: json.loads(v[1]))\n",
+    "parsed.pprint()\n",
+    "# subjects_dstream = parsed.map(lambda email: email['subject'])\n",
+    "# subject_counts = subjects_dstream.countByValue()\n",
+    "# subject_counts.pprint()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "NameError",
+     "evalue": "name 'subject_counts' is not defined",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mNameError\u001b[0m                                 Traceback (most recent call last)",
+      "\u001b[0;32m<ipython-input-6-e3d9a23e8363>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m subject_counts_sorted_dstream = subject_counts.transform(\\\n\u001b[0m\u001b[1;32m      2\u001b[0m   (lambda foo:foo\\\n\u001b[1;32m      3\u001b[0m    .sortBy(lambda x:( -x[1]))))\n\u001b[1;32m      4\u001b[0m \u001b[0mtop_five_subjects\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0msubject_counts_sorted_dstream\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mtransform\u001b[0m\u001b[0;31m\\\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      5\u001b[0m   \u001b[0;34m(\u001b[0m\u001b[0;32mlambda\u001b[0m \u001b[0mrdd\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0msc\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mparallelize\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mrdd\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mtake\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;36m5\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;31mNameError\u001b[0m: name 'subject_counts' is not defined"
+     ]
+    }
+   ],
+   "source": [
+    "# subject_counts_sorted_dstream = subject_counts.transform(\\\n",
+    "#   (lambda foo:foo\\\n",
+    "#    .sortBy(lambda x:( -x[1]))))\n",
+    "# top_five_subjects = subject_counts_sorted_dstream.transform\\\n",
+    "#   (lambda rdd:sc.parallelize(rdd.take(5)))\n",
+    "# top_five_subjects.pprint()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "parsed.\\\n",
+    "    flatMap(lambda email:email['subject'].split(\" \"))\\\n",
+    "    .countByValue()\\\n",
+    "    .transform\\\n",
+    "      (lambda rdd:rdd.sortBy(lambda x:-x[1]))\\\n",
+    "    .pprint()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "ssc.start()\n",
+    "ssc.awaitTerminationOrTimeout(10)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "\n",
+    "ssc.stop()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "--2019-06-05 14:33:52--  http://central.maven.org/maven2/org/apache/spark/spark-streaming-kafka-0-8_2.11/2.0.0-preview/spark-streaming-kafka-0-8_2.11-2.0.0-preview.jar\n",
+      "Resolving central.maven.org (central.maven.org)... 151.101.112.209\n",
+      "Connecting to central.maven.org (central.maven.org)|151.101.112.209|:80... connected.\n",
+      "HTTP request sent, awaiting response... 200 OK\n",
+      "Length: 294085 (287K) [application/java-archive]\n",
+      "Saving to: ‘spark-streaming-kafka-0-8_2.11-2.0.0-preview.jar’\n",
+      "\n",
+      "100%[======================================>] 294,085     --.-K/s   in 0.02s   \n",
+      "\n",
+      "2019-06-05 14:33:52 (17.2 MB/s) - ‘spark-streaming-kafka-0-8_2.11-2.0.0-preview.jar’ saved [294085/294085]\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "!wget http://central.maven.org/maven2/org/apache/spark/spark-streaming-kafka-0-8_2.11/2.0.0-preview/spark-streaming-kafka-0-8_2.11-2.0.0-preview.jar"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "/eos/home-y/ysunthor/SWAN_projects/test\r\n"
+     ]
+    }
+   ],
+   "source": [
+    "!pwd"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.6.5"
+  },
+  "sparkconnect": {
+   "bundled_options": [],
+   "list_of_options": [
+    {
+     "name": "spark.jars",
+     "value": "/eos/home-y/ysunthor/SWAN_projects/test"
+    },
+    {
+     "name": "spark.jars.packages",
+     "value": "org.apache.spark:spark-streaming-kafka-0-8-assembly_2.11:2.3.1"
+    }
+   ]
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
