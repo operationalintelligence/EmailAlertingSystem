@@ -1,0 +1,7 @@
+*.intro
+*.notebook_nbextensions
+*.swanrc
+*.swanproject
+.sys.v#.ConsumerAlternative.ipynb/
+.sys.v#.Kafka-Python consumer.ipynb/
+*.jar
