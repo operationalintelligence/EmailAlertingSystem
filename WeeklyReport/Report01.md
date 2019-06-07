@@ -14,3 +14,7 @@ Choosing Library
 | pykafka     | <ul><li>Easy to use, debug, and restart the process</li><li>Easy to unwrap kafka object and deal with the dataframe</li></ul>| <ul><li>May not compatible with Spark/HDFS</li><li> Cannot process data in realtime just only in static way</li><li>Easy to unwrapped kafka object and deal with the dataframe</li><li>Support large amount of producing transaction more than consuming transaction</li><ul> |
 | Spark Structured Streaming     |  <ul><li> Definitely compatible with Spark/HDFS</li><li>Easy to use, debug, and restart the process</li><li> Can process data in realtime</li><li>Easy to unwrap kafka object and deal with the dataframe</li><ul> |<ul><li> Cannot process data in realtime just only static way</li></ul>| 
 | Spark Streaming     |  <ul><li> Definitely compatible with Spark/HDFS</li><li> Can process data in realtime</li><ul> |<ul><li>Difficult to use, debug, and restart the process</li><li>Might be more complex to unwrapped kafka object and deal with the dataframe</li></ul>| 
+    
+Structure Streaming    
+--------------
+Structured Streaming is the Apache Spark API that lets you express computation on streaming data in the same way you express a batch computation on static data. The Spark SQL engine performs the computation incrementally and continuously updates the result as streaming data arrives.
