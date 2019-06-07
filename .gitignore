@@ -1,3 +1,5 @@
 StreamingNotebook/.sys.*
 StreamingNotebook/.swanproject
-
+*.intro
+*.notebook_nbextensions
+*.swanrc
