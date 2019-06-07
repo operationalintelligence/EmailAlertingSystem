@@ -12,7 +12,7 @@ Choosing Library
 |:----:|:--------|------------| 
 | kafka-python     | <ul><li>Easy to use, debug, and restart the process</li><li>Easy to unwrap kafka object and deal with the dataframe</li></ul>| <ul><li>May not compatible with Spark/HDFS</li><li> Cannot process data in realtime just only in static way</li><ul> |
 | pykafka     | <ul><li>Easy to use, debug, and restart the process</li><li>Easy to unwrap kafka object and deal with the dataframe</li></ul>| <ul><li>May not compatible with Spark/HDFS</li><li> Cannot process data in realtime just only in static way</li><li>Easy to unwrapped kafka object and deal with the dataframe</li><li>Support large amount of producing transaction more than consuming transaction</li><ul> |
-| Spark Structured Streaming     |  <ul><li> Definitely compatible with Spark/HDFS</li><li>Easy to use, debug, and restart the process</li><li> Can process data in realtime</li><li>Easy to unwrap kafka object and deal with the dataframe</li><ul> |<ul><li> Cannot process data in realtime just only static way</li></ul>| 
+| Spark Structured Streaming     |  <ul><li> Definitely compatible with Spark/HDFS</li><li>Easy to use, debug, and restart the process</li><li> Can process data in realtime</li><li>Easy to unwrap kafka object and deal with the dataframe</li><ul> |<ul><li> Still working on exploring whether it can trigger sending data on the aggregation value or not</li></ul>| 
 | Spark Streaming     |  <ul><li> Definitely compatible with Spark/HDFS</li><li> Can process data in realtime</li><ul> |<ul><li>Difficult to use, debug, and restart the process</li><li>Might be more complex to unwrapped kafka object and deal with the dataframe</li></ul>| 
     
 Structure Streaming    
