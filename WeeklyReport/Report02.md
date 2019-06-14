@@ -8,10 +8,10 @@ Yanisa Sunthornyotin (Ming) - Summer Student - CMS Monit Team
   
 Component Diagram
 ------------------
-![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/ComponentDiagram.jpg "Component Diagram")
+![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/Diagram/ComponentDiagram.jpg "Component Diagram")
 Sequence Diagram
 ------------------
-![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/SequenceDiagram.jpg "Sequence Diagram")
+![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/Diagram/SequenceDiagram.jpg "Sequence Diagram")
 
 Suggested Library : Spark Structured Streaming    
 --------------
