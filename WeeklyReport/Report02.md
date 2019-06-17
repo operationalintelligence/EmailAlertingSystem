@@ -15,11 +15,11 @@ Component Diagram
 ### Kafka Module
 * __Producer ’snow_ticket’__: Publish message to ask for user feedback
 * __Producer ’filter_alert’__: Alert user about abnormal behaviour of email flow
-* __Email flow ’email_alert’__: Real data streaming of user email alert
-* __Mock Email flow ’mock_email_alert’__: Mock data streaming of user email alert
-* __User feedback__: Feedback data streaming to improve the efficiency of dynamic alerting 
+* __Email flow ’email_alert’__: Consume real data streaming of user email alert
+* __Mock Email flow ’mock_email_alert’__: Consume mock data streaming of user email alert
+* __User feedback__: Consume feedback data streaming to improve the efficiency of dynamic alerting 
 Streaming engine
-* __Unwrapping object__:
+* __Unwrapping object__: Unwrap raw data from kafka consumer and structurize the object in to email subject, timestamp, and content.
 * __Pattern/Aggregation module__: Detecting, categorising and grouping frequent email as well as the sequence pattern of the email flow
 * __Output stream__: Publish refined alerting email to user
 ### HDFS
