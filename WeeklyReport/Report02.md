@@ -10,6 +10,27 @@ Component Diagram
 ------------------
 ![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/Diagram/ComponentDiagram.jpg "Component Diagram")
 
+
+## module
+### Kafka Module
+* __Producer ’snow_ticket’__: Publish message to ask for user feedback
+* __Producer ’filter_alert’__: Alert user about abnormal behaviour of email flow
+* __Email flow ’email_alert’__: Real data streaming of user email alert
+* __Mock Email flow ’mock_email_alert’__: Mock data streaming of user email alert
+* __User feedback__: Feedback data streaming to improve the efficiency of dynamic alerting 
+Streaming engine
+* __Unwrapping object__:
+* __Pattern/Aggregation module__: Detecting, categorising and grouping frequent email as well as the sequence pattern of the email flow
+* __Output stream__: Publish refined alerting email to user
+### HDFS
+Collect the Data frame of prioritised email and grouped email
+Prioritising module: Determine the importance of each email group or sequence
+### ML module
+Train and test the model to determine the priority of  email group or sequence. Update existing data priority in prioritising module
+### Feedback module
+Receive raw user feedback data. Clean and unwrap data out in order to user it for ML technique(email classification).
+
+
 Sequence Diagram
 ------------------
 ![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/Diagram/SequenceDiagram.jpg "Sequence Diagram")
