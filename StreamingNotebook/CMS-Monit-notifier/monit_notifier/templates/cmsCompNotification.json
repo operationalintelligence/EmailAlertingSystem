@@ -1,0 +1,40 @@
+{
+	"notification_endpoint": "http://monit-alarms.cern.ch:10011",
+	"cases": {
+		"exit_0": {
+			"targets": []
+		},
+		"exit_2": {
+			"targets": ["email", "snow"],
+			"source": "cms-htcondor-es",
+			"alert_name": "cms-htcondor-es-validation",
+    		"entities": ["default entity"],
+			"status": "ERROR",
+			"email": {
+				"to": ["cms-comp-monit-alerts@cern.ch"],
+				"send_ok": true
+			},
+
+			"snow": {
+				"functional_element": "",
+				"service_element": "MONITORING",
+				"assignment_level": 3,
+				"grouping": true
+			}
+
+		}
+
+
+	},
+	"default_case": {
+		"targets": ["email"],
+		"source": "cms-htcondor-es",
+		"alert_name": "cms-htcondor-es-validation",
+		"status": "OK",
+		"entities": ["default entity"],
+		"email": {
+			"to": ["cms-comp-monit-alerts@cern.ch"],
+			"send_ok": true
+		}
+	}
+}
