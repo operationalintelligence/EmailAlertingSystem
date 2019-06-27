@@ -3,18 +3,18 @@
 """
 CMS-Monit notifier
 """
-try:
-    import importlib.resources as pkg_resources
-except ImportError:
-    # Try backported to PY<37 `importlib_resources`.
-    import importlib_resources as pkg_resources
+# try:
+#     import importlib.resources as pkg_resources
+# except ImportError:
+#     # Try backported to PY<37 `importlib_resources`.
+#     import importlib_resources as pkg_resources
 import os
 from datetime import datetime
 import json
 import logging
 import requests
 import click
-from . import templates  # the package containing the json templates
+# from . import templates  # the package containing the json templates
 
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
 
@@ -32,7 +32,9 @@ class Notifier:
         :param config (optional) a dictionary with the format defined
         in the readme, defining the diferent cases and the default case.
         """
-        self._config = json.load(pkg_resources.open_text(templates, "default.json"))
+        with open("default.json") as default:
+            self._config = json.load(default)
+
         self._config.update(config or {})
 
     def send_notification(self, case=0, subject=None, description=None):
