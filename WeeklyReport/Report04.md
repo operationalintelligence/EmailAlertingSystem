@@ -16,3 +16,9 @@ Yanisa Sunthornyotin (Ming) - Summer Student - CMS Monit Team
 ![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/Diagram/sdEx1.png)
 
 ![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/Diagram/sdEx2.png)
+
+Error report
+===========
+Found after running the streaming job for a long time. 
+Try to retrieve daily and weekly data but the job abort before finish saving to HDFS. Now using hourly data to visualize the trend instead.
+![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/error_capture/streamingAbort.png)
