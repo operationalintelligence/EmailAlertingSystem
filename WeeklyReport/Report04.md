@@ -12,3 +12,7 @@ Yanisa Sunthornyotin (Ming) - Summer Student - CMS Monit Team
 ![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/Diagram/VisualizationExample.png)
 
 ![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/Diagram/InterestingTrendHourly.png)
+
+![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/Diagram/sdEx1.png)
+
+![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/Diagram/sdEx2.png)
