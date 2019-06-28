@@ -11,4 +11,4 @@ The objective of this project is to develop a tool that detects patterns on stre
 
 There are several different data producers and delivery mechanisms. For the scope of this project, we'll consume messages only from Apache Kafka.
 
-![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/Diagram/VirtualizationExample.png)
+![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/Diagram/VisualizationExample.png)
