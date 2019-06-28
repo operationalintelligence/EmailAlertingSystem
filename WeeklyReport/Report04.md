@@ -8,4 +8,4 @@ Yanisa Sunthornyotin (Ming) - Summer Student - CMS Monit Team
   
 1 Hour window frame: amount of alerting email 
 ------------------
-![alt text](https://swan006.cern.ch/user/ysunthor/view/SWAN_projects/Diagram/VisualizationExample.png")
+![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/Diagram/VisualizationExample.png")
