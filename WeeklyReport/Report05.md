@@ -40,7 +40,7 @@ While the newer approach, we normalize it to be in a certain range (0 to 1) what
 
 ## Result from Normalizer
 Here's the result from normalizer (new_label/normFeatures_list) compared to the former alerting trigger(label/features_list). The sequence data from that particular period(%difference before normalized) is represented by the 'features' column. The former benchmark I set it at %difference > 300% (features_list>3.0) and the newer one I set it at >90% (normFeatures_list>0.9).
-<li>0= No alert required<li>
+<li>0= No alert required</li>
 <li>1= Should trigger an alert</li>
 <li>features_list = The spike of particular %diff</li>
 <li>normFeatures_list = The spike of normalized %diff</li>
