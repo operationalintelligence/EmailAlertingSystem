@@ -8,8 +8,13 @@ Yanisa Sunthornyotin (Ming) - Summer Student - CMS Monit Team
 
 STLDecompose Result
 ------------------
-Based on this particular system information 
+Based on this particular system logging information 
 ![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/screenshots/InterestingPattern01.png)
+<li>1st row: The visualized dashboard showing %difference of the amount of system logging coming to the kafka topic compare to previous one</li>
+<li>2nd row: The visualized dashboard showing %difference of the amount of system logging coming to the kafka topic compare to previous window average value</li>
+<li>3rd row: The visualized dashboard showing counting result of the amount of system logging coming to the kafka topic</li>
+
+We found that, among many systems there're some that have its own pattern (found just 1 system so far)
 
 By using %Difference data
 ![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/screenshots/STLDecompose01.png)
