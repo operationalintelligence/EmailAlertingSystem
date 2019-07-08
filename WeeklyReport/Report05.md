@@ -40,10 +40,10 @@ While the newer approach, we normalize it to be in a certain range (0 to 1) what
 
 ## Result from Normalizer
 Here's the result from normalizer (new_label/normFeatures_list) compared to the former alerting trigger(label/features_list). The sequence data from that particular period(%difference before normalized) is represented by the 'features' column. The former benchmark I set it at %difference > 300% (features_list>3.0) and the newer one I set it at >90% (normFeatures_list>0.9).
-0= No alert required
-1= Should trigger an alert
-features_list = The spike of particular %diff
-normFeatures_list = The spike of normalized %diff
+<li>0= No alert required<li>
+<li>1= Should trigger an alert</li>
+<li>features_list = The spike of particular %diff</li>
+<li>normFeatures_list = The spike of normalized %diff</li>
 
 In the first picture, I think the newer approach gives us more appropriate alert triggering than the previous approach, for example, the first row(index=0/system=wmstatserver) features_list %diff reach 306%, the previous approach will consider it as an abnormal peak but the newer one will know that 306%, in this case, is not as weird as 850%(one of data point within 'features'). So it shouldn't trigger an alert at 306% peak.
 
