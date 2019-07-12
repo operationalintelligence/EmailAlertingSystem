@@ -4,7 +4,7 @@ Yanisa Sunthornyotin (Ming) - Summer Student - CMS Monit Team
 
 |        Task        |  Problem  | Next Step  | 
 |:--------|------------| ------------|
-| <ul><li>[x] Finished applying STLDecompose to detect the pattern of the system logs</li><li>[x] Finished applying another alternative method to normalized %difference (using Normalizer from spark MLLib)</li><li>[x] Transform new normalized data to the dataframe schema that can be broadcast via Kafka</li><li>[x] Studying about RNN to do a sequential pattern detection</li></ul>| Work on progress, no problem is found so far | <ul><li> Continue working on RNN to do a sequential pattern detection (Detect outlier)</li><li> Visualize the difference before and after apply each method</li><ul> |
+| <ul><li>[x] Finished applying STLDecompose to detect the pattern of the system logs</li><li>[x] Finished applying another alternative method to normalized %difference (using Normalizer from spark MLLib)</li><li>[x] Transform new normalized data to the dataframe schema that can be broadcast via Kafka</li><li>[x] Studying about RNN to do a sequential pattern detection</li></ul>| Work on progress, no problem is found so far | <ul><li> Continue working on RNN to do a sequential pattern detection (Detect outlier)</li><li>Apply decision tree/Dealing with unequal feature dimensions (consider %difference as feature in one time interval)</li><li> Visualize the difference before and after apply each method</li><ul> |
 
 STLDecompose Result
 ------------------
