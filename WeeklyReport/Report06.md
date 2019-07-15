@@ -4,7 +4,7 @@ Yanisa Sunthornyotin (Ming) - Summer Student - CMS Monit Team
 
 |        Task        |  Problem  | Next Step  | 
 |:--------|------------| ------------|
-| <ul><li>[x] Finished applying LSTM to predict(train/test) the pattern of the amount of system logs</li><li>[x] Finished ploting each system to observe the error and find MSE of the model of each system</li></ul>| <ul><li>Error while connecting to Spark cluster: reached the maximum number of parallel Spark connections. May have to refactor again</li><li>Problem with collecting streaming dataframe: temporary solved by convert to Pandas</li></ul> | <ul><li> Continue working on RNN to do a sequential pattern detection (Detect outlier), apply Standard Deviation to find outlier</li><li>Apply LSTM with %different data</li><li>Visualize the difference before and after apply each method</li><ul> |
+| <ul><li>[x] Finished applying LSTM to predict(train/test) the pattern of the amount of system logs</li><li>[x] Finished ploting each system to observe the error and find MSE of the model of each system</li></ul>| <ul><li>Error while connecting to Spark cluster: reached the maximum number of parallel Spark connections. May have to refactor again</li><li>Problem with collecting streaming dataframe: temporary solved by convert to Pandas</li></ul> | <ul><li> Continue working on RNN to do a sequential pattern detection (Detect outlier), apply Standard Deviation to find outlier</li><li>Apply LSTM with %different data</li><li>Visualize the difference before and after apply each method</li><li>Convert predicted data back to spark dataframe, correct datetime column and dealing with scaler</li><ul> |
  
  
 
