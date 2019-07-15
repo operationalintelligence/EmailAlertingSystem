@@ -15,7 +15,8 @@ PopDB: amount of system logging prediction
 
 DBS: amount of system logging prediction
 ![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/screenshots/LSTM_dbs.png)
+<li>The lowest plot indicates the original data before applying MinMaxScaler. As you can see, there'll be a little bit of graph shifting</li>
 
 ConfDB: amount of system logging prediction
 ![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/screenshots/LSTM_confdb.png)
-
+<li>The lowest plot indicates the original data before applying MinMaxScaler. As you can see, there'll be a little bit of graph shifting</li>
