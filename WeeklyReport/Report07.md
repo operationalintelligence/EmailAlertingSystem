@@ -7,8 +7,6 @@ Yanisa Sunthornyotin (Ming) - Summer Student - CMS Monit Team
 | <ul><li>[x] Selecting elbow point to find a proper number of cluster and apply to Kmeans</li><li>[x] Finished applying Kmeans to predict(train/test) the pattern of the amount of system logs/%Difference per WindowAVG</li><li>[x] Finished ploting system to observe the error and displaying the dataframe that show the root cause of that error</li></ul>| <ul><li>Java connection error when consume/process too much data</li></ul> | <ul><li>Improve the model efficiency and find the score of each model</li><ul> |
  
  
-"system_vec","user_vec","api_vec",'count_req','%diff_req','%diff_sys','%diff_api','%diff_user'\
-                                 ,'weekday', 'weekend', 'monthbegin', 'monthend','hour','minute', 'day', 'month', 'year'
 Kmeans Result
 ------------------
 Features:
