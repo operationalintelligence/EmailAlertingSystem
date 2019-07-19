@@ -32,7 +32,7 @@ Word embeddings have the ability to generalize, due to semantically similar word
 
 If out feature vector contains one-hot vectors of the documents’ words, we will only be able to consider features we’ve seen during training; when we use embeddings, semantically similar words will create similar features, and will lead to similar classification.
 
-ref:![alt text](https://www.quora.com/What-is-the-difference-between-using-word2vec-vs-one-hot-embeddings-as-input-to-classifiers)
+ref: https://www.quora.com/What-is-the-difference-between-using-word2vec-vs-one-hot-embeddings-as-input-to-classifiers
 
 
 Find k value by applying elbow method (2000 samples of request)
