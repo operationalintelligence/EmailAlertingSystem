@@ -24,6 +24,17 @@ Features:
 <li>Hour/Minute/Day/Month/Year</li>
 
 By using 'OneHotEncoding' to tranform catagorical data(System/User/API) into numerical data, we got the new column which contain sparse vector of that particular value.
+ 
+OneHotEncoding VS Word2Vec
+------------------
+One-hot vectors are high-dimensional and sparse, while word embeddings are low-dimensional and dense (usually between 50–600 dimensional). When we use one-hot vectors as a feature in a classifier, our feature vector grows with the vocabulary size; word embeddings are more computationally efficient.
+
+and more importantly:
+Word embeddings have the ability to generalize, due to semantically similar words having similar vectors, which is not the case in one-hot vectors (each pair of such vectors 𝑤𝑖,𝑤𝑗 has cosine similarity 𝑐𝑜𝑠(𝑤𝑖,𝑤𝑗)=0).
+
+If out feature vector contains one-hot vectors of the documents’ words, we will only be able to consider features we’ve seen during training; when we use embeddings, semantically similar words will create similar features, and will lead to similar classification.
+
+ref:![alt text](https://www.quora.com/What-is-the-difference-between-using-word2vec-vs-one-hot-embeddings-as-input-to-classifiers)
 
 
 Find k value by applying elbow method (2000 samples of request)
@@ -40,4 +51,16 @@ Crapserver anomaly detection
 
 DQM anomaly detection
 ![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/screenshots/dqm_k7.png)
+
+
+Phedex anomaly detection
+![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/screenshots/phedex_k7.png)
+
+
+Regmgr2 anomaly detection
+![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/screenshots/reqmgr2_k7.png)
+
+
+Dataframe for finding the root cause of the error
+![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/screenshots/rootcause_df.png)
 
