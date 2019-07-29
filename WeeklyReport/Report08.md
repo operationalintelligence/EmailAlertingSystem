@@ -58,12 +58,12 @@ CouchDB anomaly detection(max distance +/-40%)
 ![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/screenshots/couchdb_out40%.png)
 
 
-DQM anomaly detection(>2sd)
-![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/screenshots/dqm_2sd.png)
-
-
 DQM anomaly detection(>1sd)
 ![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/screenshots/dqm_1sd.png)
+
+
+DQM anomaly detection(>2sd)
+![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/screenshots/dqm_2sd.png)
 
 
 Crabserver anomaly detection
