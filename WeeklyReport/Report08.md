@@ -37,7 +37,9 @@ Find k value by applying elbow method (2000 samples of request)
 According to the plotting result, we choose k=10.
 
 <li>Silhouette analysis</li>
+
 ![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/screenshots/Silhouette.png)
+
 
 Silhouette: Study the separation distance between the resulting clusters
 <li>+1 indicate that the sample is far away from the neighbouring clusters</li>
@@ -55,7 +57,7 @@ CouchDB anomaly detection(>1sd)
 ![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/screenshots/couchdb_1sd.png)
 
 CouchDB anomaly detection(max distance +/-40%)
-![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/screenshots/couchdb_out40%.png)
+![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/screenshots/couchdb_out40%25.png)
 
 
 DQM anomaly detection(>1sd)
