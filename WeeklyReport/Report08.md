@@ -47,22 +47,23 @@ Silhouette: Study the separation distance between the resulting clusters
 New Alert Benchmark
 ========
 Based on the distance from the datapoint to the center of its cluster. If the distance is more than 2 standard deviation of the mean distance in each cluster, that datapoint should be considered as an outlier.
-CouchDB anomaly detection(>1sd)
-![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/screenshots/couchdb_2sd.png)
 
 CouchDB anomaly detection(>2sd)
+![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/screenshots/couchdb_2sd.png)
+
+CouchDB anomaly detection(>1sd)
 ![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/screenshots/couchdb_1sd.png)
 
 CouchDB anomaly detection(max distance +/-40%)
 ![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/screenshots/couchdb_out40%.png)
 
 
-DQM anomaly detection(>1sd)
-![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/screenshots/dqm_1sd.png)
-
-
 DQM anomaly detection(>2sd)
 ![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/screenshots/dqm_2sd.png)
+
+
+DQM anomaly detection(>1sd)
+![alt text](https://github.com/operationalintelligence/EmailAlertingSystem/blob/master/screenshots/dqm_1sd.png)
 
 
 Crabserver anomaly detection
