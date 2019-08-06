@@ -4,7 +4,7 @@ Yanisa Sunthornyotin (Ming) - Summer Student - CMS Monit Team
 
 |        Task        |  Problem  | Next Step  | 
 |:--------|------------| ------------|
-| <ul><li>[x] Upload/setup code on CERN lxplus</li><li>[x] Refactor code and seperate 2 email sending strategies: semi-static(must join with streaming dataframe later to publish email) and pure streaming dataframe</li><li>[x] Publish new email notifier dataflow based on predicted dataframe</li></ul>|<ul>Cannot install spark MLLib dependency (com.github.fommil.netlib/Native BLAS) in the lxplus/bash command</ul> | <ul><li>Test the system</li><li>Find the solution of how to install spark MLlib on lxplus</li><li>Document all project progress/Future work</li><ul> |
+| <ul><li>[x] Upload/setup code on CERN lxplus</li><li>[x] Refactor code and seperate 2 email sending strategies: semi-static(must join with streaming dataframe later to publish email) and pure streaming dataframe</li><li>[x] Publish new email notifier dataflow based on predicted dataframe</li><li>Poster presentation</li></ul>|<ul>Cannot install spark MLLib dependency (com.github.fommil.netlib/Native BLAS) in the lxplus/bash command</ul> | <ul><li>Test the system</li><li>Find the solution of how to install spark MLlib on lxplus</li><li>Document all project progress/Future work</li><ul> |
  
 
 Alerting Triage System files
