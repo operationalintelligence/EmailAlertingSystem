@@ -1,1 +1,1 @@
-from alert_pkg.app import MonitStreaming,MultipleAggregation,StreamingAlert
+from .app import MonitStreaming,MultipleAggregation,StreamingAlert
