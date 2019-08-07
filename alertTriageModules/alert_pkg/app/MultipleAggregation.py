@@ -28,8 +28,8 @@ class MultipleAggregation:
         groupped_df=groupped_df.select('*', avg('req_load').over(wm_req).alias('avg_req')).select('*', ((col('req_load') - first('avg_req').over(wo_req))).alias('diff_req')).select('*', ((col('diff_req')/first('avg_req').over(wo_req))).alias('%diff_req')).select('*', avg('system_load').over(wm_sys).alias('avg_sys')).select('*', ((col('system_load') - first('avg_sys').over(wo_sys))).alias('diff_sys')).select('*', ((col('diff_sys')/first('avg_sys').over(wo_sys))).alias('%diff_sys')).select('*', avg('api_load').over(wm_api).alias('avg_api')).select('*', ((col('api_load') - first('avg_api').over(wo_api))).alias('diff_api')).select('*', ((col('diff_api')/first('avg_api').over(wo_api))).alias('%diff_api')).select('*', avg('user_load').over(wm_user).alias('avg_user')).select('*', ((col('user_load') - first('avg_user').over(wo_user))).alias('diff_user')).select('*', ((col('diff_user')/first('avg_user').over(wo_user))).alias('%diff_user'))
         return groupped_df
         
-    def startAggregation(self,streamDF,hdfsPath,checkpointPath):
-        joined_raw_data=streamDF.join(streamDF, ["system","window","api","user","count_req"], "inner")
+    def startAggregation(self,streamDF,staticDF,hdfsPath,checkpointPath):
+        joined_raw_data=streamDF.join(staticDF, ["system","window","api","user","count_req"], "inner")
         full_difference_hdfs=joined_raw_data.writeStream.outputMode("append").format("parquet").option("path", hdfsPath).option("checkpointLocation", checkpointPath)  .option("failOnDataLoss",False) .outputMode("append")  .start()
         full_difference_hdfs.awaitTermination()
 
@@ -46,8 +46,8 @@ class MultipleAggregation:
         static_data = self.readHDFSStatic(spark=spark,path="/cms/users/carizapo/ming/data_cmsweb_logs")
 
         columns_drop=['diff_user','diff_api','diff_sys','diff_req']
-        groupped_df = multiAgg.defineGrouping(static_df=static_data,observerPeriod="1 hour",meanPeriod="1 day").drop(*columns_drop)
-        multiAgg.startAggregation(streamDF=raw_data,hdfsPath="/cms/users/carizapo/ming/fullDiff_cmsweb_logs",checkpointPath="/cms/users/carizapo/ming/checkpoint_prep_cmsweb_logs")
+        groupped_df=self.defineGrouping(static_df=static_data,observerPeriod="1 hour",meanPeriod="1 day").drop(*columns_drop)
+        self.startAggregation(staticDF=groupped_df,streamDF=raw_data,hdfsPath="/cms/users/carizapo/ming/fullDiff_cmsweb_logs",checkpointPath="/cms/users/carizapo/ming/checkpoint_prep_cmsweb_logs")
 
 if __name__ == '__main__':
     multiAgg = MultipleAggregation()

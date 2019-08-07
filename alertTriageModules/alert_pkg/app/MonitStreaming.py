@@ -45,5 +45,4 @@ class MonitStreaming:
         self.startMonit(streamingDF=groupped_req_data,hdfsPath="/cms/users/carizapo/ming/data_cmsweb_logs",checkpointLocation="/cms/users/carizapo/ming/req_checkpoint_cmsweb_logs")
 
 if __name__ == '__main__':
-    monit=MonitStreaming()
-    monit.main()
+    main()
