@@ -23,7 +23,7 @@ class StreamingAlert:
     def readHDFSStatic(self, spark, path):
         return spark.read.format("parquet").load(path)
 
-    def pipelineInit(self, staticDF):
+    def pipelineInit(self, static_df):
         sys_indexer = StringIndexer(inputCol="system", outputCol="system_hash")
         user_indexer = StringIndexer(inputCol="user", outputCol="user_hash")
         api_indexer = StringIndexer(inputCol="api", outputCol="api_hash")
@@ -33,13 +33,13 @@ class StreamingAlert:
                                          "system_vec", "user_vec", "api_vec"])
         pipeline = Pipeline(
             stages=[sys_indexer, user_indexer, api_indexer, encoder])
-        pipelineModel = pipeline.fit(staticDF)
+        pipelineModel = pipeline.fit(static_df)
         return pipelineModel
 
-    def modelTraining(self, model, staticDF, streamingDF):
+    def modelTraining(self, model, static_df, streaming_df, k_value):
 
-        result = model.transform(staticDF)
-        stream_result = model.transform(streamingDF)
+        result = model.transform(static_df)
+        stream_result = model.transform(streaming_df)
 
         train_data, test_data = result.randomSplit([0.8, 0.2], seed=1234)
         df_train = train_data.withColumn('set', lit(0))
@@ -60,19 +60,19 @@ class StreamingAlert:
         # test_transformed = pipeline_model.transform(test_data)
         stream_transformed = pipeline_model.transform(stream_result)
         kmeanModel, stream_predictions = self.kmeans(
-            k=10, staticDF=train_transformed, streamingDF=stream_transformed)
+            k=k_value, static_df=train_transformed, streaming_df=stream_transformed)
         full_stream_predictions = self.findEuclidean(
-            model=kmeanModel, streamingDF=stream_predictions)
+            model=kmeanModel, streaming_df=stream_predictions)
         return full_stream_predictions
 
-    def kmeans(self, k, staticDF, streamingDF):
+    def kmeans(self, k, static_df, streaming_df):
         kmeans = KMeans(k, seed=1)  # 10 clusters here
-        model = kmeans.fit(staticDF.select('features'))
+        model = kmeans.fit(static_df.select('features'))
         # predictions = model.transform(staticDF)
-        stream_predictions = model.transform(streamingDF)
+        stream_predictions = model.transform(streaming_df)
         return model, stream_predictions
 
-    def findEuclidean(self, model, streamingDF):
+    def findEuclidean(self, model, streaming_df):
         columns_drop = ['system_hash', 'user_hash', 'api_hash', 'system_vec', 'user_vec', 'api_vec', 'dateFormated',
                         'hour', 'minute', 'day', 'month', 'year', 'weekday', 'weekend', 'monthbegin', 'monthend', 'features']
         centers = model.clusterCenters()
@@ -80,14 +80,14 @@ class StreamingAlert:
         distance_udf = udf(lambda x, y: float(
             euclidean(x, fixed_entry[y])), FloatType())
         # For joining streaming dataframe
-        streamingDF = streamingDF.withColumn('distances', distance_udf(
+        streaming_df = streaming_df.withColumn('distances', distance_udf(
             col('features'), col('prediction'))).drop(*columns_drop)
-        distances_benchmark = streamingDF.withWatermark("date", "1 minute").groupby('prediction', window('date', "1 minute", "1 minute")).agg(
+        distances_benchmark = streaming_df.withWatermark("date", "1 minute").groupby('prediction', window('date', "1 minute", "1 minute")).agg(
             avg('distances').alias('avg_distances'), stddev('distances').alias('std_distances'), max('distances').alias('max_distances'))
-        streamingDF = streamingDF.join(
+        streaming_df = streaming_df.join(
             distances_benchmark, "prediction", "inner").drop("window")
 
-        return streamingDF
+        return streaming_df
 
     def featureSelection(self):
         dc = DateConverter(inputCol='date', outputCol='dateFormated')
@@ -108,8 +108,18 @@ class StreamingAlert:
         pipeline = Pipeline(
             stages=[dc, hrex, minex, dex, mex, wdex, wex, mbex, meex, yex, va])
         return pipeline
+        
+    def findAnomaly(self,stream_df):
+        alert_udf = udf(lambda avg_dist, std_dist, dist: dist >=
+                    avg_dist+2*std_dist, BooleanType())
+        stream_alerts = stream_df.withColumn('label', alert_udf(
+            col('avg_distances'), col('std_distances'), col('distances')))
+        stream_alerts_broadcast = stream_alerts.select([c for c in stream_alerts.columns if c not in {
+                                                        'prediction', 'distances', 'avg_distances', 'std_distances', 'max_distances', 'label'}]).where(stream_alerts.label == 1)
+        return stream_alerts_broadcast
 
-    def sendEmail(self, streamDF):
+
+    def sendEmail(self, stream_df):
         notifier = Notifier(config=json.loads(s='''
         {
         "cases": {
@@ -158,9 +168,8 @@ class StreamingAlert:
         "notification_endpoint": "http://monit-alarms.cern.ch:10011"
         }'''
                                             ))
-        alert_streaming_flow = streamDF.writeStream.foreach(lambda alert: notifier.send_notification(subject=alert.system,description=json.dumps(alert.asDict(), default=str))).start()
+        alert_streaming_flow = stream_df.writeStream.foreach(lambda alert: notifier.send_notification(subject=alert.system,description=json.dumps(alert.asDict(), default=str))).start()
         alert_streaming_flow.awaitTermination()
-
 
 def main():
     alert = StreamingAlert()
@@ -168,8 +177,10 @@ def main():
             .setAppName("AlertingTriage-streaming"))
     sc = SparkContext(conf=conf).getOrCreate()
     spark = SparkSession.builder.appName(sc.appName).getOrCreate()
+    sc.addPyFile('notifier.py')
+
     schema = StructType().add("window", StructType().add("start", TimestampType()).add("end", TimestampType())).add("system", StringType()).add("api", StringType()).add("user", StringType()).add("count_req", LongType()).add("req_load", LongType()).add("system_load", LongType()).add("api_load",
-                                                                                                                                                                                                                                                                                            LongType()).add("user_load", LongType())        .add("avg_req", DoubleType()).add("%diff_req", DoubleType()).add("avg_sys", DoubleType()).add("%diff_sys", DoubleType()).add("avg_api", DoubleType()).add("%diff_api", DoubleType()).add("avg_user", DoubleType()).add("%diff_user", DoubleType())
+                                                                                                                                                                                                                                                                                      LongType()).add("user_load", LongType())        .add("avg_req", DoubleType()).add("%diff_req", DoubleType()).add("avg_sys", DoubleType()).add("%diff_sys", DoubleType()).add("avg_api", DoubleType()).add("%diff_api", DoubleType()).add("avg_user", DoubleType()).add("%diff_user", DoubleType())
     alerts_hist = alert.readHDFSStatic(
         spark=spark, path="/cms/users/carizapo/ming/fullDiff_cmsweb_logs")
     alerts = alert.readHDFSStream(
@@ -179,17 +190,11 @@ def main():
         'date', col("window.start")).drop(*drop_col)
     stream_data = alerts.withColumn(
         'date', col("window.start")).drop(*drop_col)
-    pipelineModel = alert.pipelineInit(staticDF=raw_data_init)
+    pipeline_model = alert.pipelineInit(static_df=raw_data_init)
     full_stream_predictions = alert.modelTraining(
-        model=pipelineModel, staticDF=raw_data_init, streamingDF=stream_data)
-    alert_udf = udf(lambda avg_dist, std_dist, dist: dist >=
-                    avg_dist+2*std_dist, BooleanType())
-    stream_alerts = full_stream_predictions.withColumn('label', alert_udf(
-        col('avg_distances'), col('std_distances'), col('distances')))
-    stream_alerts_broadcast = stream_alerts.select([c for c in stream_alerts.columns if c not in {
-                                                    'prediction', 'distances', 'avg_distances', 'std_distances', 'max_distances', 'label'}]).where(stream_alerts.label == 1)
-    sc.addPyFile('notifier.py')
-    alert.sendEmail(streamDF=stream_alerts_broadcast)
+        model=pipeline_model, static_df=raw_data_init, streaming_df=stream_data,k_value=10)
+    stream_alerts_broadcast=alert.findAnomaly(stream_df=full_stream_predictions)
+    alert.sendEmail(stream_df=stream_alerts_broadcast)
 
 
 if __name__ == '__main__':

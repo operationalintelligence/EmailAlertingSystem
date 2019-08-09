@@ -10,9 +10,9 @@ class MultipleAggregation:
     def readHDFSStatic(self, spark, path):
         return spark.read.format("parquet").load(path)
 
-    def defineGrouping(self,static_df,observerPeriod,meanPeriod):
-        obs_interval=window("window.start", observerPeriod)
-        mean_interval=window("window.start", meanPeriod)
+    def defineGrouping(self,static_df,observer_period,mean_period):
+        obs_interval=window("window.start", observer_period)
+        mean_interval=window("window.start", mean_period)
 
         wo_sys = Window.partitionBy('system',obs_interval)
         wo_user = Window.partitionBy('user',obs_interval)
@@ -28,10 +28,10 @@ class MultipleAggregation:
         groupped_df=groupped_df.select('*', avg('req_load').over(wm_req).alias('avg_req')).select('*', ((col('req_load') - first('avg_req').over(wo_req))).alias('diff_req')).select('*', ((col('diff_req')/first('avg_req').over(wo_req))).alias('%diff_req')).select('*', avg('system_load').over(wm_sys).alias('avg_sys')).select('*', ((col('system_load') - first('avg_sys').over(wo_sys))).alias('diff_sys')).select('*', ((col('diff_sys')/first('avg_sys').over(wo_sys))).alias('%diff_sys')).select('*', avg('api_load').over(wm_api).alias('avg_api')).select('*', ((col('api_load') - first('avg_api').over(wo_api))).alias('diff_api')).select('*', ((col('diff_api')/first('avg_api').over(wo_api))).alias('%diff_api')).select('*', avg('user_load').over(wm_user).alias('avg_user')).select('*', ((col('user_load') - first('avg_user').over(wo_user))).alias('diff_user')).select('*', ((col('diff_user')/first('avg_user').over(wo_user))).alias('%diff_user'))
         return groupped_df
         
-    def startAggregation(self,streamDF,staticDF,hdfsPath,checkpointPath):
-        joined_raw_data=streamDF.join(staticDF, ["system","window","api","user","count_req"], "inner")
-        full_difference_hdfs=joined_raw_data.writeStream.outputMode("append").format("parquet").option("path", hdfsPath).option("checkpointLocation", checkpointPath)  .option("failOnDataLoss",False) .outputMode("append")  .start()
-        full_difference_hdfs.awaitTermination()
+    def startAggregation(self,stream_df,static_df,hdfs_path,checkpoint_path):
+        joined_raw_data=stream_df.join(static_df, ["system","window","api","user","count_req"], "inner")
+        full_difference_hdfs=joined_raw_data.writeStream.outputMode("append").format("parquet").option("path", hdfs_path).option("checkpointLocation", checkpoint_path)  .option("failOnDataLoss",False) .outputMode("append")  .start()
+        return full_difference_hdfs
 
 def main():
     multiAgg = MultipleAggregation()
@@ -47,8 +47,9 @@ def main():
     static_data = multiAgg.readHDFSStatic(spark=spark,path="/cms/users/carizapo/ming/data_cmsweb_logs")
 
     columns_drop=['diff_user','diff_api','diff_sys','diff_req']
-    groupped_df=multiAgg.defineGrouping(static_df=static_data,observerPeriod="1 hour",meanPeriod="1 day").drop(*columns_drop)
-    multiAgg.startAggregation(staticDF=groupped_df,streamDF=raw_data,hdfsPath="/cms/users/carizapo/ming/fullDiff_cmsweb_logs",checkpointPath="/cms/users/carizapo/ming/checkpoint_prep_cmsweb_logs")
+    groupped_df=multiAgg.defineGrouping(static_df=static_data,observer_period="1 hour",mean_period="1 day").drop(*columns_drop)
+    full_difference_hdfs=multiAgg.startAggregation(static_df=groupped_df,stream_df=raw_data,hdfs_path="/cms/users/carizapo/ming/fullDiff_cmsweb_logs",checkpoint_path="/cms/users/carizapo/ming/checkpoint_prep_cmsweb_logs")
+    full_difference_hdfs.awaitTermination()
 
 if __name__ == '__main__':
     main()
