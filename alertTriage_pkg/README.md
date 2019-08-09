@@ -16,6 +16,7 @@ Main File
 <li>stop(streaming_df): void</li>
 
 
+___
 ***MultipleAggregation.py*** 
 Consume message generated from MonitStreaming.py (HDFS:`/cms/users/carizapo/ming/data_cmsweb_logs`) and do multiple aggregation to find rolling average and other significant parameters then collect in another HDFS path name `/cms/users/carizapo/ming/fullDiff_cmsweb_logs`
 
@@ -29,7 +30,7 @@ Consume message generated from MonitStreaming.py (HDFS:`/cms/users/carizapo/ming
 
 <li>startAggregation(stream_df,static_df,hdfs_path,checkpoint_path): DataStreamWriter</li>
 
-
+___
 ***StreamingAlert.py***
 Consume data from MultipleAggregation.py(HDFS: `/cms/users/carizapo/ming/fullDiff_cmsweb_logs`), prepare for machine learning model by applying One-hot encoder, input k-value for k-means and predict the anomally by clustering. Determine outlier with standard deviation then publish alert to email using notifier.
 
