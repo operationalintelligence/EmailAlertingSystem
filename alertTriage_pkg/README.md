@@ -2,8 +2,10 @@
  
 Main File
 ------------
+
 ***MonitStreaming.py***
  Stream Kafka message(CMSWeb_log) into the HDFS path name `/cms/users/carizapo/ming/data_cmsweb_logs` and apply window grouping
+
 **API**
 <li>consume(spark,schema,server_url): streaming_df</li>
 
@@ -15,7 +17,9 @@ Main File
 
 ***MultipleAggregation.py*** 
  Consume message generated from MonitStreaming.py (HDFS:`/cms/users/carizapo/ming/data_cmsweb_logs`) and do multiple aggregation to find rolling average and other significant parameters then collect in another HDFS path name `/cms/users/carizapo/ming/fullDiff_cmsweb_logs`
+
 **API**
+
 <li>readHDFSStream( spark, schema, path): streaming_df</li>
 
 <li>readHDFSStatic( spark, path): static_df</li>
@@ -25,7 +29,9 @@ Main File
 <li>startAggregation(stream_df,static_df,hdfs_path,checkpoint_path): DataStreamWriter</li>
 
 ***StreamingAlert.py***
+
 Consume data from MultipleAggregation.py(HDFS: `/cms/users/carizapo/ming/fullDiff_cmsweb_logs`), prepare for machine learning model by applying One-hot encoder, input k-value for k-means and predict the anomally by clustering. Determine outlier with standard deviation then publish alert to email using notifier.
+
 **API**
 
 <li>readHDFSStream(spark, schema, path): streaming_df</li>
