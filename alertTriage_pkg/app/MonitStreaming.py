@@ -1,6 +1,5 @@
 import json
 from pyspark.sql.functions import *
-from pyspark.sql.types import StructType
 from datetime import datetime
 from pyspark.sql.types import *
 from pyspark import SparkContext, SparkConf

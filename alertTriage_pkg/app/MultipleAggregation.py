@@ -2,8 +2,8 @@
 from pyspark.sql.functions import *
 from pyspark.sql.types import *
 from pyspark import SparkContext, SparkConf
-from pyspark.sql import SparkSession
-from pyspark.sql import Window
+from pyspark.sql import SparkSession,Window
+
 class MultipleAggregation:
     def readHDFSStream(self, spark, schema, path):
         return spark.readStream.format("parquet").schema(schema).load(path)
