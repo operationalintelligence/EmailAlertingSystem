@@ -3,3 +3,4 @@ StreamingNotebook/.swanproject
 *.intro
 *.notebook_nbextensions
 *.swanrc
+*.pyc
