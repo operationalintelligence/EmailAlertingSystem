@@ -47,5 +47,5 @@ Consume data from MultipleAggregation.py(HDFS: `/cms/users/carizapo/ming/fullDif
 <li>kmeans(k, static_df, streaming_df): model, streaming_df</li>
 
 <li>findEuclidean(model, streaming_df): streaming_df</li>
-<li>featureSelection(): pipeline</li>
+<li>featureSelection(): Pipeline</li>
 <li>findAnomaly(stream_df): streaming_df</li>
